@@ -242,7 +242,12 @@ a {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 30%, transparent 35%, rgba(7, 7, 7, 0.55) 100%);
+  /* Vignette for legibility, PLUS a bottom fade that crushes everything to
+     the exact same flat --bg colour the next section starts with — this is
+     what keeps the hero → product transition seamless instead of cutting. */
+  background:
+    radial-gradient(ellipse at 50% 30%, transparent 35%, rgba(7, 7, 7, 0.55) 100%),
+    linear-gradient(to bottom, transparent 70%, var(--bg) 100%);
 }
 
 /* Tier 1: real 3D scene is driving the hero — the canvas takes over and

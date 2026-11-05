@@ -174,12 +174,35 @@
     var timeout = new Promise(function (resolve) { window.setTimeout(resolve, 600); });
 
     var netSurfaceY = netGroup.position.y + 0.02; // top face of the woven net, in world space
+    var liveItems = null;
+    var liveTotalWidth = 0;
+
+    // Shrinks the letters (and tightens their spacing to match) just enough
+    // that the full word fits comfortably in view, whatever the window's
+    // aspect ratio — this is what keeps every letter visible and the word
+    // properly centred instead of spilling off the sides on narrow screens.
+    function fitLettersToView() {
+      if (!liveItems || !liveTotalWidth) return;
+      var dist = camera.position.z; // letters sit near z ≈ 0
+      var vFovRad = (camera.fov * Math.PI) / 180;
+      var visibleH = 2 * Math.tan(vFovRad / 2) * dist;
+      var visibleW = visibleH * camera.aspect;
+      var maxW = visibleW * 0.8;
+      var s = Math.min(1, maxW / liveTotalWidth);
+      liveItems.forEach(function (it) {
+        it.mesh.scale.set(s, s, 1);
+        it.mesh.position.x = it.finalX * s;
+      });
+    }
 
     Promise.race([fontReady, timeout]).then(function () {
-      var items = buildLetters(THREE, letterGroup, netSurfaceY);
+      var built = buildLetters(THREE, letterGroup, netSurfaceY);
+      liveItems = built.items;
+      liveTotalWidth = built.total;
+      fitLettersToView();
       buildMascot(THREE, scene, netSurfaceY, function (mascotMesh) {
-        playEntrance(gsap, items, mascotMesh);
-        setupScrollDolly(gsap, camera, netGroup, items, mascotMesh);
+        playEntrance(gsap, liveItems, mascotMesh);
+        setupScrollDolly(gsap, camera, netGroup, liveItems, mascotMesh);
       });
     });
 
@@ -198,26 +221,30 @@
       resizeFrame = requestAnimationFrame(function () {
         resizeFrame = null;
         sizeRenderer();
+        fitLettersToView();
       });
     });
 
-    /* ---- the net itself: rim + three legs + woven surface, all procedural ---- */
+    /* ---- the net itself: rim + three legs + woven surface, modelled on
+       the real product photos (dark padded rim, teal branded leg sleeves,
+       open black diamond mesh) ---- */
     function buildNet(THREE) {
       var group = new THREE.Group();
       var radius = 3.1;
 
-      var rimGeo = new THREE.TorusGeometry(radius, 0.14, 14, 56);
-      var rimMat = new THREE.MeshStandardMaterial({ color: 0x14161a, roughness: 0.35, metalness: 0.4 });
+      // Dark padded foam rim — matte, not shiny metal.
+      var rimGeo = new THREE.TorusGeometry(radius, 0.15, 14, 56);
+      var rimMat = new THREE.MeshStandardMaterial({ color: 0x19140f, roughness: 0.85, metalness: 0.04 });
       var rimMesh = new THREE.Mesh(rimGeo, rimMat);
       rimMesh.rotation.x = Math.PI / 2;
       group.add(rimMesh);
 
+      // Open diamond-weave net — mostly transparent so it reads as real mesh.
       var netTex = buildNetTexture(THREE);
-      var netGeo = new THREE.CircleGeometry(radius - 0.22, 48);
+      var netGeo = new THREE.CircleGeometry(radius - 0.24, 48);
       var netMat = new THREE.MeshBasicMaterial({
         map: netTex,
         transparent: true,
-        opacity: 0.92,
         side: THREE.DoubleSide,
       });
       var netMesh = new THREE.Mesh(netGeo, netMat);
@@ -225,12 +252,15 @@
       netMesh.position.y = 0.02;
       group.add(netMesh);
 
-      var legMat = new THREE.MeshStandardMaterial({ color: 0x20a39e, roughness: 0.4, metalness: 0.1 });
+      // Three teal legs, branded with the real "Arctik Spike" wordmark.
+      var legTex = buildLegTexture(THREE);
+      var legMat = new THREE.MeshStandardMaterial({ map: legTex, roughness: 0.55, metalness: 0.04 });
       var legCount = 3;
       for (var i = 0; i < legCount; i++) {
         var angle = (i / legCount) * Math.PI * 2;
-        var legGeo = new THREE.CylinderGeometry(0.08, 0.1, 2.5, 10);
+        var legGeo = new THREE.CylinderGeometry(0.1, 0.12, 2.5, 16);
         var leg = new THREE.Mesh(legGeo, legMat);
+        leg.rotation.y = angle; // face the branded panel outward, varying per leg
         var legRadius = radius * 0.78;
         leg.position.set(Math.cos(angle) * legRadius, -1.25, Math.sin(angle) * legRadius);
         leg.rotation.z = Math.cos(angle) * 0.22;
@@ -248,11 +278,9 @@
       cnv.height = size;
       var ctx = cnv.getContext('2d');
       ctx.clearRect(0, 0, size, size);
-      ctx.fillStyle = 'rgba(8,9,10,0.55)';
-      ctx.fillRect(0, 0, size, size);
-      ctx.strokeStyle = 'rgba(255,255,255,0.28)';
-      ctx.lineWidth = 1.4;
-      var step = 22;
+      ctx.strokeStyle = 'rgba(10,10,10,0.92)';
+      ctx.lineWidth = 2.2;
+      var step = 30;
       for (var x = -size; x < size * 2; x += step) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -263,6 +291,29 @@
         ctx.lineTo(x + size, 0);
         ctx.stroke();
       }
+      var tex = new THREE.CanvasTexture(cnv);
+      tex.minFilter = THREE.LinearFilter;
+      return tex;
+    }
+
+    function buildLegTexture(THREE) {
+      var w = 220;
+      var h = 760;
+      var cnv = document.createElement('canvas');
+      cnv.width = w;
+      cnv.height = h;
+      var ctx = cnv.getContext('2d');
+      ctx.fillStyle = '#20a39e';
+      ctx.fillRect(0, 0, w, h);
+      ctx.save();
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = '#0d2524';
+      ctx.font = "700 54px Archivo, sans-serif";
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('ARCTIK SPIKE', 0, 0);
+      ctx.restore();
       var tex = new THREE.CanvasTexture(cnv);
       tex.minFilter = THREE.LinearFilter;
       return tex;
@@ -324,8 +375,7 @@
         it.finalX -= total / 2;
         it.mesh.position.x = it.finalX; // horizontal position is set immediately…
       });
-      group.userData.letters = items;
-      return items; // …only the fall (y) and the settle (rotation) animate in.
+      return { items: items, total: total }; // …only the fall (y) and the settle (rotation) animate in.
     }
 
     function buildMascot(THREE, scene, netSurfaceY, cb) {
