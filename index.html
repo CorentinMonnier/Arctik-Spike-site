@@ -7,7 +7,7 @@
 <meta name="description" content="Arctik Spike, la première marque de Roundnet suisse. Un seul set, conçu pour durer et pensé pour voyager.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -69,18 +69,126 @@
     </section>
 
     <section class="product-slide" id="produit">
-      <div class="product-slide__card" data-product-card>
+      <div class="product-slide__intro">
         <span class="eyebrow">Le set Arctik Spike</span>
         <h2>Conçu pour durer.<br>Pensé pour voyager.</h2>
+      </div>
+
+      <div class="product-stage" data-product-stage>
+        <img class="product-stage__image" src="assets/set-cutout.png" alt="Le set Arctik Spike" data-product-image>
+
+        <div class="product-stage__callout" data-callout style="--x: 46%; --y: 10%;">
+          <span class="product-stage__dot" aria-hidden="true"></span>
+          <p><strong>Filet tressé renforcé</strong>Pensé pour encaisser des milliers de smashs sans se détendre.</p>
+        </div>
+
+        <div class="product-stage__callout" data-callout style="--x: 9%; --y: 58%;">
+          <span class="product-stage__dot" aria-hidden="true"></span>
+          <p><strong>Pieds pliables</strong>Trois appuis stables, faciles à replier pour voyager léger.</p>
+        </div>
+
+        <div class="product-stage__callout" data-callout style="--x: 80%; --y: 22%;">
+          <span class="product-stage__dot" aria-hidden="true"></span>
+          <p><strong>Cadre rembourré</strong>Un bord souple qui protège les mains à chaque plongeon.</p>
+        </div>
+
+        <div class="product-stage__callout" data-callout style="--x: 90%; --y: 58%;">
+          <span class="product-stage__dot" aria-hidden="true"></span>
+          <p><strong>Signé Arctik Spike</strong>Imaginé et pensé en Suisse, reconnaissable au premier coup d'œil.</p>
+        </div>
+      </div>
+
+      <div class="product-slide__card" data-product-card>
         <p class="price">CHF 69.00 <span class="price__old">CHF 89.00</span></p>
-        <p class="body">Tout ce qu'il faut pour jouer, dans un seul set. Tension du filet, solidité des pieds, sac de transport épuré — pensé en Suisse pour résister à tout.</p>
+        <p class="body">Tout ce qu'il faut pour jouer, dans un seul set — pensé en Suisse pour résister à tout.</p>
         <!-- TODO Corentin: remplacer par le vrai lien du produit sur ta boutique Shopify -->
         <a href="https://arctikspike.com" class="btn" target="_blank" rel="noopener">Acheter sur la boutique</a>
       </div>
     </section>
+
+    <section class="story" id="histoire">
+      <div class="story__inner">
+        <span class="eyebrow">Notre histoire</span>
+        <p class="story__lead" data-reveal>Arctik Spike est le premier roundnet suisse, né d'une idée simple : créer un set plus robuste, plus beau et plus nomade.</p>
+        <p data-reveal>Pensé en Suisse, notre set est conçu pour résister à tout, du sable brûlant aux pelouses givrées.</p>
+        <p data-reveal>Chaque détail a été travaillé avec soin : la tension du filet, la solidité des pieds, le design épuré du sac de transport.</p>
+        <p data-reveal>Notre mission est claire : démocratiser le roundnet et donner envie de jouer partout, que ce soit dans ton jardin, sur la plage ou au parc du coin.</p>
+      </div>
+    </section>
+
+    <section class="rules" id="regles">
+      <div class="rules__inner">
+        <span class="eyebrow">Règles du jeu</span>
+        <h2>Les bases pour commencer</h2>
+
+        <ol class="rules__list">
+          <li class="rules__item" data-reveal>
+            <span class="rules__num" aria-hidden="true">01</span>
+            <div>
+              <h3>Deux équipes de deux</h3>
+              <p>Face à face autour du filet, chaque équipe défend le même cercle.</p>
+            </div>
+          </li>
+          <li class="rules__item" data-reveal>
+            <span class="rules__num" aria-hidden="true">02</span>
+            <div>
+              <h3>Trois touches maximum</h3>
+              <p>Comme au volley, la balle doit retomber sur le filet avant la troisième touche de l'équipe.</p>
+            </div>
+          </li>
+          <li class="rules__item" data-reveal>
+            <span class="rules__num" aria-hidden="true">03</span>
+            <div>
+              <h3>Un rebond qui compte</h3>
+              <p>La balle doit rebondir sur le filet et rester jouable pour l'équipe adverse — trop fort ou raté, le point est perdu.</p>
+            </div>
+          </li>
+          <li class="rules__item" data-reveal>
+            <span class="rules__num" aria-hidden="true">04</span>
+            <div>
+              <h3>Premier à 21, par deux points d'écart</h3>
+              <p>Le service change de camp à chaque point perdu. Simple, rapide, et ça repart tout de suite.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="contact__inner">
+        <span class="eyebrow">Nous contacter</span>
+        <h2>Une question, un évènement ?</h2>
+
+        <div class="contact__cards">
+          <div class="contact__card" data-reveal>
+            <h3>Une question ?</h3>
+            <p>Sur le produit, une commande ou autre chose — on te répond directement.</p>
+            <!-- TODO Corentin: remplace par ta vraie adresse e-mail de contact -->
+            <a class="btn btn--outline" href="mailto:contact@arctikspike.com">Nous écrire</a>
+          </div>
+
+          <div class="contact__card" data-reveal>
+            <h3>Organiser une démo</h3>
+            <p>Entreprise, école, festival, anniversaire — on vient faire découvrir le roundnet à ton évènement.</p>
+            <!-- TODO Corentin: ce formulaire pointe vers un identifiant Formspree à créer (gratuit sur formspree.io) -->
+            <form class="contact__form" action="https://formspree.io/f/VOTRE_ID" method="POST">
+              <label class="visually-hidden" for="demo-name">Nom</label>
+              <input id="demo-name" name="name" type="text" placeholder="Ton nom" required>
+              <label class="visually-hidden" for="demo-email">E-mail</label>
+              <input id="demo-email" name="email" type="email" placeholder="Ton e-mail" required>
+              <label class="visually-hidden" for="demo-context">Contexte</label>
+              <input id="demo-context" name="context" type="text" placeholder="Entreprise, école, évènement…">
+              <label class="visually-hidden" for="demo-message">Message</label>
+              <textarea id="demo-message" name="message" placeholder="Date, lieu, nombre de participants…" rows="3"></textarea>
+              <button type="submit" class="btn">Envoyer la demande</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="site-footer" id="contact">
+  <footer class="site-footer">
     <div class="site-footer__inner">
       <div class="site-footer__brand">
         <span class="site-footer__wordmark">ARCTIK SPIKE</span>
@@ -99,6 +207,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="hero3d.js"></script>
+  <script defer src="sections.js"></script>
   <script defer src="script.js"></script>
 </body>
 </html>
