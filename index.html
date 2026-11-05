@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arctik Spike — Première marque de Roundnet suisse</title>
+<meta name="description" content="Arctik Spike, la première marque de Roundnet suisse. Un seul set, conçu pour durer et pensé pour voyager.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header" data-site-header>
+    <div class="site-header__inner">
+      <a href="#top" class="site-header__logo">
+        <img src="assets/penguin.png" alt="" class="site-header__logo-mark" aria-hidden="true">
+        <span class="site-header__wordmark">ARCTIK SPIKE</span>
+      </a>
+
+      <nav class="site-header__nav" aria-label="Navigation principale">
+        <ul class="site-header__nav-list">
+          <li><a href="#produit" class="site-header__nav-link">Produit</a></li>
+          <li><a href="#histoire" class="site-header__nav-link">Notre histoire</a></li>
+          <li><a href="#regles" class="site-header__nav-link">Règles du jeu</a></li>
+          <li><a href="#contact" class="site-header__nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-header__actions">
+        <a href="#produit" class="btn btn--small">Acheter</a>
+        <button type="button" class="site-header__burger" data-site-header-toggle aria-expanded="false" aria-controls="mobile-nav">
+          <span></span>
+          <span class="visually-hidden">Menu</span>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-nav" class="site-header__mobile-nav" data-site-header-mobile-nav aria-label="Navigation principale">
+      <ul>
+        <li><a href="#produit">Produit</a></li>
+        <li><a href="#histoire">Notre histoire</a></li>
+        <li><a href="#regles">Règles du jeu</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" id="hero" data-hero-stage>
+      <div class="hero__grid" aria-hidden="true" data-hero-grid></div>
+
+      <div class="hero__inner" data-hero-inner>
+        <h1 class="visually-hidden">Arctik Spike</h1>
+        <div class="hero__word" aria-hidden="true" data-hero-word></div>
+
+        <img class="hero__mascot" src="assets/penguin.png" alt="" data-hero-mascot>
+
+        <p class="hero__subheading">Première marque de Roundnet suisse</p>
+        <a href="#produit" class="btn">Voir le produit</a>
+      </div>
+
+      <div class="hero__hint" aria-hidden="true" data-hero-hint>Défilez pour découvrir</div>
+    </section>
+
+    <section class="product-slide" id="produit">
+      <div class="product-slide__card" data-product-card>
+        <span class="eyebrow">Le set Arctik Spike</span>
+        <h2>Conçu pour durer.<br>Pensé pour voyager.</h2>
+        <p class="price">CHF 69.00 <span class="price__old">CHF 89.00</span></p>
+        <p class="body">Tout ce qu'il faut pour jouer, dans un seul set. Tension du filet, solidité des pieds, sac de transport épuré — pensé en Suisse pour résister à tout.</p>
+        <!-- TODO Corentin: remplacer par le vrai lien du produit sur ta boutique Shopify -->
+        <a href="https://arctikspike.com" class="btn" target="_blank" rel="noopener">Acheter sur la boutique</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">
+        <span class="site-footer__wordmark">ARCTIK SPIKE</span>
+        <p class="site-footer__tagline">Le roundnet suisse, pensé pour durer.</p>
+      </div>
+      <ul class="site-footer__socials">
+        <li><a href="https://www.instagram.com/arctik.spike/" target="_blank" rel="noopener" aria-label="Instagram">IG</a></li>
+      </ul>
+    </div>
+    <div class="site-footer__bottom">
+      <p>© 2026 Arctik Spike</p>
+    </div>
+  </footer>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script defer src="script.js"></script>
+</body>
+</html>
