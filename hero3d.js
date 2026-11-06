@@ -173,6 +173,12 @@
     netGroup.position.set(0, -1.1, -0.6);
     scene.add(netGroup);
 
+    // A few low-poly icebergs, well back in the fog — on brand ("Arctik"),
+    // but deliberately a background detail: far enough back that the fog
+    // (scene.fog above) naturally hazes them out, never competing with the
+    // net/letters for attention.
+    scene.add(buildIcebergs(THREE));
+
     var letterGroup = new THREE.Group();
     scene.add(letterGroup);
 
@@ -234,6 +240,35 @@
     /* ---- the net itself: rim + three legs + woven surface, modelled on
        the real product photos (dark padded rim, teal branded leg sleeves,
        open black diamond mesh) ---- */
+    function buildIcebergs(THREE) {
+      // Three simple low-poly ice chunks, placed far back and to the
+      // sides. flatShading gives the faceted "cut ice" look cheaply,
+      // without needing a real iceberg model.
+      var group = new THREE.Group();
+      var iceMat = new THREE.MeshStandardMaterial({
+        color: 0xcfeeec,
+        roughness: 0.75,
+        metalness: 0.02,
+        transparent: true,
+        opacity: 0.5,
+        flatShading: true,
+      });
+      var placements = [
+        { x: -7.5, y: 0.3, z: -13, scale: 2.2, rotY: 0.4 },
+        { x: 8.8, y: 0, z: -16.5, scale: 3, rotY: -0.9 },
+        { x: -3, y: -0.3, z: -19, scale: 1.7, rotY: 1.3 },
+      ];
+      placements.forEach(function (p) {
+        var geo = new THREE.IcosahedronGeometry(1, 0);
+        var mesh = new THREE.Mesh(geo, iceMat);
+        mesh.position.set(p.x, p.y, p.z);
+        mesh.scale.set(p.scale, p.scale * 0.8, p.scale);
+        mesh.rotation.set(0.15, p.rotY, 0.1);
+        group.add(mesh);
+      });
+      return group;
+    }
+
     function buildNet(THREE) {
       var group = new THREE.Group();
       var radius = 3.1;
@@ -258,19 +293,30 @@
       netMesh.position.y = 0.02;
       group.add(netMesh);
 
-      // Five flat, tapered teal legs — built from three stacked slab
-      // segments (foot / neck / branded body) instead of a round cylinder,
-      // because the real legs are flat plastic blades, not poles. Each
-      // segment is oriented with an explicit basis matrix (tangent/up/
-      // outward) rather than Euler rotation, so the branded face is
-      // guaranteed to point straight outward with no mirroring — top of
-      // the leg (y=0, local) meets the rim, bottom (y=-2.5) touches the
-      // ground, same span as before so nothing else needs to change.
+      // Five flat, tapered teal legs — one continuous moulded blade per
+      // leg (a single flat shape, not stacked box segments). The 3-block
+      // version (foot/neck/body stacked) read as "scattered pieces"
+      // instead of one part, because real legs taper *continuously*: narrow
+      // where they clip onto the rim, widening into the branded panel,
+      // pinching at a narrow waist, then flaring to their widest at the
+      // foot — traced from the macro product photo. Each leg is oriented
+      // with an explicit basis matrix (tangent/up/outward) rather than
+      // Euler rotation, so the branded face points straight outward with
+      // no mirroring. Flat (no real extrusion depth) + DoubleSide reads
+      // correctly from every angle as the net rotates, since every leg's
+      // outward face is what the camera sees from outside the table —
+      // true depth would need a custom UV generator for ExtrudeGeometry
+      // that isn't worth the risk when it can't be rendered to check here.
       var legTex = buildLegTexture(THREE);
-      var legSideMat = new THREE.MeshStandardMaterial({ color: 0x20a39e, roughness: 0.55, metalness: 0.04 });
-      var legFrontMat = new THREE.MeshStandardMaterial({ map: legTex, roughness: 0.5, metalness: 0.04 });
+      var legFrontMat = new THREE.MeshStandardMaterial({
+        map: legTex,
+        roughness: 0.5,
+        metalness: 0.04,
+        side: THREE.DoubleSide,
+      });
+      var legShape = buildLegShape(THREE);
+      var legGeo = new THREE.ShapeGeometry(legShape);
       var legCount = 5;
-      var legThickness = 0.11;
       var legRadius = radius * 0.78;
 
       for (var i = 0; i < legCount; i++) {
@@ -283,28 +329,10 @@
         var lx = Math.cos(angle) * legRadius;
         var lz = Math.sin(angle) * legRadius;
 
-        // Branded body — top segment, meets the rim, "Arctik"/"Spike" on
-        // its outward (+Z) face only; the other 5 box faces stay plain teal.
-        var bodyGeo = new THREE.BoxGeometry(0.3, 1.3, legThickness);
-        var bodyMats = [legSideMat, legSideMat, legSideMat, legSideMat, legFrontMat, legSideMat];
-        var body = new THREE.Mesh(bodyGeo, bodyMats);
-        body.position.set(lx, -0.65, lz);
-        body.quaternion.copy(legQuat);
-        group.add(body);
-
-        // Neck — the narrow "waist" between the branded body and the foot.
-        var neckGeo = new THREE.BoxGeometry(0.2, 0.5, legThickness);
-        var neck = new THREE.Mesh(neckGeo, legSideMat);
-        neck.position.set(lx, -1.55, lz);
-        neck.quaternion.copy(legQuat);
-        group.add(neck);
-
-        // Foot — wide, flared base that actually touches the ground.
-        var footGeo = new THREE.BoxGeometry(0.46, 0.7, legThickness);
-        var foot = new THREE.Mesh(footGeo, legSideMat);
-        foot.position.set(lx, -2.15, lz);
-        foot.quaternion.copy(legQuat);
-        group.add(foot);
+        var leg = new THREE.Mesh(legGeo, legFrontMat);
+        leg.position.set(lx, 0, lz);
+        leg.quaternion.copy(legQuat);
+        group.add(leg);
       }
 
       // The real ball is bright yellow — rests just off-centre on the net.
@@ -344,6 +372,30 @@
       return tex;
     }
 
+    function buildLegShape(THREE) {
+      // Local 2D profile: X = width, Y = height, origin (0,0) at the top
+      // where the leg clips onto the rim, tracing down to the ground.
+      // Symmetric about X=0. See the comment above where this is used for
+      // why this replaced three stacked boxes.
+      var s = new THREE.Shape();
+      s.moveTo(-0.095, 0);
+      s.quadraticCurveTo(-0.14, -0.08, -0.155, -0.32); // clip point widening into the branded panel
+      s.lineTo(-0.16, -1.2); // branded panel, roughly constant width
+      s.quadraticCurveTo(-0.16, -1.4, -0.1, -1.55); // pinch in to the waist
+      s.lineTo(-0.095, -1.85); // waist, narrowest point
+      s.quadraticCurveTo(-0.21, -1.95, -0.225, -2.2); // flare out toward the foot
+      s.quadraticCurveTo(-0.23, -2.34, -0.1, -2.36); // rounded bottom-left corner
+      s.lineTo(0.1, -2.36); // flat foot base, touches the ground
+      s.quadraticCurveTo(0.23, -2.34, 0.225, -2.2); // rounded bottom-right corner
+      s.quadraticCurveTo(0.21, -1.95, 0.095, -1.85); // flare back in
+      s.lineTo(0.1, -1.55); // waist, right side
+      s.quadraticCurveTo(0.16, -1.4, 0.16, -1.2); // widen back out
+      s.lineTo(0.155, -0.32); // branded panel, right edge
+      s.quadraticCurveTo(0.14, -0.08, 0.095, 0); // narrow back to the rim clip
+      s.lineTo(-0.095, 0);
+      return s;
+    }
+
     function buildLegTexture(THREE) {
       // Flat panel now (no more cylinder-wrap), so the text is drawn
       // upright, no rotate trick needed — same straight canvas-to-plane
@@ -371,11 +423,16 @@
       }
 
       var maxW = w * 0.8;
-      // Real leg sleeves print the wordmark upright, on two lines.
+      // Real leg sleeves print the wordmark upright, on two lines. This
+      // texture maps onto the whole leg's bounding box now (one continuous
+      // shape, not just a "body" box segment) — the branded panel in that
+      // shape sits roughly 14%-51% of the way down from the rim, so both
+      // lines are placed inside that band with margin, instead of at
+      // whatever fraction looked right for the old, separate body segment.
       ctx.font = '700 ' + fitSize('Arctik', maxW) + 'px Archivo, sans-serif';
-      ctx.fillText('Arctik', w / 2, h * 0.42);
+      ctx.fillText('Arctik', w / 2, h * 0.24);
       ctx.font = '700 ' + fitSize('Spike', maxW) + 'px Archivo, sans-serif';
-      ctx.fillText('Spike', w / 2, h * 0.6);
+      ctx.fillText('Spike', w / 2, h * 0.4);
 
       var tex = new THREE.CanvasTexture(cnv);
       tex.minFilter = THREE.LinearFilter;

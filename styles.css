@@ -38,8 +38,16 @@ body::before {
   pointer-events: none;
   opacity: 0.035;
   mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
+  /* Same 64px grid lines as .hero__grid, now layered under the noise so
+     the pattern Corentin liked in the hero reads as a persistent site
+     motif rather than something confined to (and fading out within) the
+     hero alone — "il faudrait qu'il soit tout le temps". Fixed position,
+     same as the grain, so it doesn't scroll away with the page. */
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat, repeat, repeat;
 }
 
 a {
@@ -276,9 +284,14 @@ a {
   pointer-events: none;
   /* Vignette for legibility, PLUS a bottom fade that crushes everything to
      the exact same flat --bg colour the next section starts with — this is
-     what keeps the hero → product transition seamless instead of cutting. */
+     what keeps the hero → product transition seamless instead of cutting.
+     The vignette is deliberately weaker than it looks like it should be:
+     at 0.55 it was crushing .hero__grid to invisible everywhere but a small
+     oval near the top, which read as the grid pattern "stopping" rather
+     than fading gently — Corentin liked that pattern and wants it staying
+     legible across the whole hero, not just the centre. */
   background:
-    radial-gradient(ellipse at 50% 30%, transparent 35%, rgba(7, 7, 7, 0.55) 100%),
+    radial-gradient(ellipse at 50% 30%, transparent 45%, rgba(7, 7, 7, 0.35) 100%),
     linear-gradient(to bottom, transparent 70%, var(--bg) 100%);
 }
 

@@ -56,6 +56,10 @@
       var lastTrailX = null;
       var lastTrailY = null;
       var shown = false;
+      // Unwrapped (not clamped to ±180°) so the rotation always takes the
+      // shortest path to the new heading instead of snapping the long way
+      // round when movement direction crosses the ±180° seam.
+      var currentAngle = 0;
 
       window.addEventListener(
         'mousemove',
@@ -69,7 +73,15 @@
 
           if (lastX !== null) {
             var dx = e.clientX - lastX;
-            setRot(Math.max(-18, Math.min(18, dx * 1.6)));
+            var dy = e.clientY - lastY;
+            // Full heading (every direction, not just a left/right tilt) —
+            // the penguin now actually turns to face where it's moving.
+            if (Math.hypot(dx, dy) > 1.5) {
+              var target = Math.atan2(dy, dx) * (180 / Math.PI);
+              var delta = ((target - currentAngle + 540) % 360) - 180;
+              currentAngle += delta;
+              setRot(currentAngle);
+            }
           }
           lastX = e.clientX;
           lastY = e.clientY;
