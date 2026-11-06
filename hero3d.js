@@ -144,15 +144,19 @@
     var scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x070707, 0.045);
 
+    // Lower and further back than before, closer to the real product
+    // photos' own 3/4 angle — the previous framing looked down steeply
+    // into the net like a hole; this reads more like a table seen from
+    // the side, with the rim's oval and the legs underneath both clear.
     var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-    camera.position.set(0, 1.9, 9.5);
-    camera.lookAt(0, -0.4, 0);
+    camera.position.set(0, 1.3, 10.2);
+    camera.lookAt(0, -0.7, 0);
 
     scene.add(new THREE.HemisphereLight(0xffffff, 0x0a0a0c, 1.2));
     var key = new THREE.DirectionalLight(0xffffff, 1.1);
     key.position.set(3, 5, 4);
     scene.add(key);
-    var rim = new THREE.DirectionalLight(0x4dd4ce, 0.6);
+    var rim = new THREE.DirectionalLight(0x4dd4ce, 0.85);
     rim.position.set(-4, 2, -3);
     scene.add(rim);
 
@@ -212,7 +216,7 @@
     function tick() {
       requestAnimationFrame(tick);
       netGroup.rotation.y += clock.getDelta() * 0.18;
-      camera.lookAt(0, -0.3, netGroup.position.z); // keep the net framed even as the dolly moves
+      camera.lookAt(0, -0.7, netGroup.position.z); // keep the net framed even as the dolly moves
       renderer.render(scene, camera);
     }
     tick();
@@ -236,7 +240,7 @@
 
       // Dark padded foam rim — matte, not shiny metal.
       var rimGeo = new THREE.TorusGeometry(radius, 0.15, 14, 56);
-      var rimMat = new THREE.MeshStandardMaterial({ color: 0x19140f, roughness: 0.85, metalness: 0.04 });
+      var rimMat = new THREE.MeshStandardMaterial({ color: 0x121212, roughness: 0.85, metalness: 0.04 });
       var rimMesh = new THREE.Mesh(rimGeo, rimMat);
       rimMesh.rotation.x = Math.PI / 2;
       group.add(rimMesh);
@@ -320,7 +324,9 @@
       cnv.height = size;
       var ctx = cnv.getContext('2d');
       ctx.clearRect(0, 0, size, size);
-      ctx.strokeStyle = 'rgba(10,10,10,0.92)';
+      // Lighter than before: pure near-black lines barely read against the
+      // already-dark hero background, so the weave all but disappeared.
+      ctx.strokeStyle = 'rgba(72, 78, 77, 0.95)';
       ctx.lineWidth = 2.2;
       var step = 30;
       for (var x = -size; x < size * 2; x += step) {
@@ -482,7 +488,11 @@
           anticipatePin: 1,
         },
       });
-      tl.to(camera.position, { y: 3.2, z: 5.6, duration: 1, ease: 'power1.inOut' }, 0);
+      // Gentler dolly than before — the old target (y:3.2, z:5.6) raised the
+      // camera so much relative to its distance that the net ended up
+      // looking straight down into, like a hole, instead of staying
+      // readable as a table seen from the side throughout the scroll.
+      tl.to(camera.position, { y: 1.9, z: 7.0, duration: 1, ease: 'power1.inOut' }, 0);
       tl.to(netGroup.rotation, { y: '+=1.6', duration: 1, ease: 'power1.inOut' }, 0);
       tl.to(netGroup.position, { z: -2.4, duration: 1, ease: 'power1.inOut' }, 0);
       if (mats.length) tl.to(mats, { opacity: 0, duration: 0.4 }, 0.5);

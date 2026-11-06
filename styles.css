@@ -21,6 +21,27 @@ body {
   overflow-x: hidden;
 }
 
+/* Global, very subtle grain over the whole page — the thing that keeps a
+   flat near-black background from reading as "just black" without
+   introducing any new flat colour of its own (which is what caused the
+   seams in the first place). Screen-space (fixed, doesn't scroll with the
+   page), low opacity, blend-overlay so it only ever lightens/darkens by a
+   hair — it should be felt, not seen. Sits above normal page content
+   (including .product-slide's z-index:10) so the texture is continuous
+   across every section, but below the header/sticky-bar/cursor so it never
+   dulls real UI. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
 a {
   color: inherit;
 }
@@ -273,6 +294,13 @@ a {
   display: none;
 }
 
+.hero__snow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
 .hero__inner {
   position: relative;
   z-index: 3;
@@ -376,7 +404,9 @@ a {
   flex-direction: column;
   align-items: center;
   padding: 7rem max(1.25rem, env(safe-area-inset-left, 0px)) 6rem max(1.25rem, env(safe-area-inset-right, 0px));
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 45% at 50% 0%, rgba(32, 163, 158, 0.07), transparent 65%);
   gap: 2.5rem;
 }
 
@@ -491,7 +521,14 @@ a {
 /* ---------- notre histoire (editorial) ---------- */
 
 .story {
-  background: #0c0f0e;
+  /* Same flat --bg as every other section now (no more lighter #0c0f0e
+     block of its own) — colour never actually changes at a section
+     boundary, so there's nothing to cut. The soft teal glows add depth
+     instead of relying on a different flat colour to feel distinct. */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 45% at 12% 8%, rgba(32, 163, 158, 0.07), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 92%, rgba(32, 163, 158, 0.05), transparent 60%);
   padding: 7rem max(1.5rem, env(safe-area-inset-left, 0px)) 7rem max(1.5rem, env(safe-area-inset-right, 0px));
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -588,6 +625,11 @@ a {
 
 .rules {
   padding: 7rem max(1.25rem, env(safe-area-inset-left, 0px)) 7rem max(1.25rem, env(safe-area-inset-right, 0px));
+  /* Inherits the plain --bg colour from body (always did), now topped with
+     the same soft glow treatment as every other section for consistency. */
+  background-image:
+    radial-gradient(ellipse 50% 42% at 90% 12%, rgba(32, 163, 158, 0.06), transparent 60%),
+    radial-gradient(ellipse 45% 38% at 10% 88%, rgba(32, 163, 158, 0.05), transparent 60%);
 }
 
 .rules__inner {
@@ -647,10 +689,89 @@ a {
   max-width: 50ch;
 }
 
+/* ---------- faq ---------- */
+
+.faq {
+  padding: 7rem max(1.25rem, env(safe-area-inset-left, 0px)) 7rem max(1.25rem, env(safe-area-inset-right, 0px));
+  /* Same flat --bg as every other section — see .story for why. */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 48% 42% at 85% 10%, rgba(32, 163, 158, 0.06), transparent 60%),
+    radial-gradient(ellipse 45% 38% at 8% 90%, rgba(32, 163, 158, 0.05), transparent 60%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.faq__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.faq__inner h2 {
+  font-family: 'Shrikhand', cursive;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  margin: 0 0 3rem;
+}
+
+.faq__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.faq__item {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.faq__item summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.98rem;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.faq__item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq__item summary::after {
+  content: '+';
+  flex: none;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--teal);
+  transition: transform 0.25s ease;
+}
+
+.faq__item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq__item p {
+  margin: 0.8rem 0 0.1rem;
+  opacity: 0.75;
+  line-height: 1.6;
+  font-size: 0.92rem;
+}
+
 /* ---------- nous contacter ---------- */
 
 .contact {
-  background: #0c0f0e;
+  /* Same flat --bg as every other section — see .story for why. */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 50% 40% at 15% 15%, rgba(32, 163, 158, 0.06), transparent 60%),
+    radial-gradient(ellipse 45% 40% at 88% 85%, rgba(32, 163, 158, 0.05), transparent 60%);
   padding: 7rem max(1.25rem, env(safe-area-inset-left, 0px)) 6rem max(1.25rem, env(safe-area-inset-right, 0px));
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -745,10 +866,175 @@ a {
   cursor: pointer;
 }
 
+/* ---------- sticky buy bar ---------- */
+
+.sticky-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  transform: translateY(120%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  background: rgba(7, 7, 7, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.75rem max(1.25rem, env(safe-area-inset-left, 0px)) max(0.75rem, env(safe-area-inset-bottom, 0px)) max(1.25rem, env(safe-area-inset-right, 0px));
+}
+
+.sticky-bar.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sticky-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.sticky-bar__info {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.sticky-bar__logo {
+  width: 32px;
+  height: auto;
+  flex: none;
+}
+
+.sticky-bar__name {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sticky-bar__price {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.sticky-bar__price span {
+  text-decoration: line-through;
+  opacity: 0.6;
+  margin-left: 0.3rem;
+}
+
+.sticky-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: none;
+}
+
+.sticky-bar__close {
+  background: none;
+  border: none;
+  color: var(--fg);
+  opacity: 0.55;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.3rem;
+  line-height: 1;
+}
+
+.sticky-bar__close:hover {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .sticky-bar__name {
+    font-size: 0.78rem;
+  }
+  .sticky-bar__price {
+    font-size: 0.72rem;
+  }
+}
+
 /* ---------- footer ---------- */
 
 .site-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site-footer__newsletter {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site-footer__newsletter-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 2.2rem max(1.25rem, env(safe-area-inset-left, 0px)) 2.2rem max(1.25rem, env(safe-area-inset-right, 0px));
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.site-footer__newsletter-label {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.site-footer__newsletter-form {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.site-footer__newsletter-form input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 0.88rem;
+  min-width: 220px;
+}
+
+.site-footer__newsletter-form input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.site-footer__newsletter-form input:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+.site-footer__newsletter-form .btn {
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .site-footer__newsletter-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .site-footer__newsletter-form {
+    width: 100%;
+  }
+  .site-footer__newsletter-form input {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .site-footer__inner {
@@ -808,6 +1094,144 @@ a {
   margin: 0;
 }
 
+/* Showcase — carrousel "le produit en détail", dans #produit.
+   Défilement en CSS pur (scroll-snap) ; showcase.js ne fait que les points,
+   les flèches et la lecture de la vidéo au bon moment. */
+.showcase {
+  width: 100%;
+  max-width: 1180px;
+  margin-top: 6rem;
+}
+
+.showcase__head {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.showcase__head h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.2vw, 2.1rem);
+  margin: 0;
+}
+
+.showcase__viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0.5rem max(1.25rem, env(safe-area-inset-left, 0px)) 0.5rem max(1.25rem, env(safe-area-inset-right, 0px));
+  margin: 0 max(-1.25rem, calc(-1 * env(safe-area-inset-left, 0px))) 0 max(-1.25rem, calc(-1 * env(safe-area-inset-right, 0px)));
+}
+
+.showcase__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.showcase__track {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.showcase__slide {
+  flex: 0 0 min(760px, 82vw);
+  scroll-snap-align: center;
+}
+
+.showcase__slide img,
+.showcase__slide video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 20px;
+  background: #111;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.45));
+}
+
+.showcase__caption {
+  margin: 1.1rem 0.25rem 0;
+  font-family: 'Fraunces', serif;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  opacity: 0.78;
+}
+
+.showcase__caption strong {
+  display: block;
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--teal-light);
+  opacity: 1;
+  margin-bottom: 0.3rem;
+}
+
+.showcase__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.showcase__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: var(--fg);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.showcase__arrow:hover {
+  border-color: var(--teal);
+  color: var(--teal-light);
+  background: rgba(32, 163, 158, 0.08);
+}
+
+.showcase__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.showcase__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.showcase__dot.is-active {
+  background: var(--teal);
+  transform: scale(1.35);
+}
+
+@media (max-width: 640px) {
+  .showcase {
+    margin-top: 4.5rem;
+  }
+
+  .showcase__slide {
+    flex: 0 0 90vw;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero__word span,
   .hero__mascot,
@@ -821,7 +1245,12 @@ a {
     opacity: 1 !important;
   }
 
-  .hero__canvas {
+  .sticky-bar {
+    transition: none !important;
+  }
+
+  .hero__canvas,
+  .hero__snow {
     display: none !important;
   }
 

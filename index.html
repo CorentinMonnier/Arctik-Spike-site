@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Arctik Spike — Première marque de Roundnet suisse</title>
 <meta name="description" content="Arctik Spike, la première marque de Roundnet suisse. Un seul set, conçu pour durer et pensé pour voyager.">
+
+<!-- TODO Corentin: ces URLs pointent vers arctikspike.vercel.app, l'adresse en ligne actuelle.
+     Remplace-les par https://arctikspike.com (og:url + og:image) une fois le domaine repointé vers Vercel. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Arctik Spike — Première marque de Roundnet suisse">
+<meta property="og:description" content="Un seul set, conçu pour durer et pensé pour voyager. Le roundnet suisse, pensé pour durer.">
+<meta property="og:url" content="https://arctikspike.vercel.app">
+<meta property="og:image" content="https://arctikspike.vercel.app/assets/set-studio.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arctik Spike — Première marque de Roundnet suisse">
+<meta name="twitter:description" content="Un seul set, conçu pour durer et pensé pour voyager.">
+<meta name="twitter:image" content="https://arctikspike.vercel.app/assets/set-studio.jpg">
+
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,6 +40,7 @@
           <li><a href="#produit" class="site-header__nav-link">Produit</a></li>
           <li><a href="#histoire" class="site-header__nav-link">Notre histoire</a></li>
           <li><a href="#regles" class="site-header__nav-link">Règles du jeu</a></li>
+          <li><a href="#faq" class="site-header__nav-link">FAQ</a></li>
           <li><a href="#contact" class="site-header__nav-link">Contact</a></li>
         </ul>
       </nav>
@@ -42,10 +59,30 @@
         <li><a href="#produit">Produit</a></li>
         <li><a href="#histoire">Notre histoire</a></li>
         <li><a href="#regles">Règles du jeu</a></li>
+        <li><a href="#faq">FAQ</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
   </header>
+
+  <!-- Appears once the product section has been reached, stays visible for
+       the rest of the page, hides again if the visitor scrolls back up. -->
+  <div class="sticky-bar" data-sticky-bar>
+    <div class="sticky-bar__inner">
+      <div class="sticky-bar__info">
+        <img src="assets/penguin.png" alt="" class="sticky-bar__logo">
+        <div>
+          <p class="sticky-bar__name">Set Arctik Spike</p>
+          <p class="sticky-bar__price">CHF 69.00 <span>CHF 89.00</span></p>
+        </div>
+      </div>
+      <div class="sticky-bar__actions">
+        <!-- TODO Corentin: même lien que le bouton principal — remplace par ta vraie page produit Shopify -->
+        <a href="https://arctikspike.com" class="btn btn--small" target="_blank" rel="noopener">Acheter</a>
+        <button type="button" class="sticky-bar__close" data-sticky-close aria-label="Fermer cette barre">✕</button>
+      </div>
+    </div>
+  </div>
 
   <main id="top">
     <section class="hero" id="hero" data-hero-stage>
@@ -109,6 +146,52 @@
         <p class="body">Tout ce qu'il faut pour jouer, dans un seul set — pensé en Suisse pour résister à tout.</p>
         <!-- TODO Corentin: remplacer par le vrai lien du produit sur ta boutique Shopify -->
         <a href="https://arctikspike.com" class="btn" target="_blank" rel="noopener">Acheter sur la boutique</a>
+      </div>
+
+      <div class="showcase" data-showcase data-reveal>
+        <div class="showcase__head">
+          <span class="eyebrow">En détail</span>
+          <h3>Le set sous toutes ses coutures</h3>
+        </div>
+
+        <div class="showcase__viewport" data-showcase-viewport>
+          <ul class="showcase__track" data-showcase-track>
+            <li class="showcase__slide">
+              <img src="assets/showcase-full.jpg" alt="Le set Arctik Spike complet avec ses trois balles et son sac de transport" loading="lazy">
+              <p class="showcase__caption"><strong>Le kit complet</strong>Le filet, 3 balles et le sac de transport — tout pour jouer en moins de deux minutes.</p>
+            </li>
+            <li class="showcase__slide">
+              <img src="assets/showcase-top.jpg" alt="Vue de trois quarts du filet Arctik Spike, tressage et cinq pieds visibles" loading="lazy">
+              <p class="showcase__caption"><strong>Vue d'ensemble</strong>Un tressage serré sur un cadre souple, porté par cinq pieds largement espacés pour une stabilité parfaite.</p>
+            </li>
+            <li class="showcase__slide">
+              <img src="assets/showcase-profile.jpg" alt="Profil bas du filet Arctik Spike, structure et pieds visibles" loading="lazy">
+              <p class="showcase__caption"><strong>Une structure pensée pour durer</strong>Le cadre reste souple et stable, même après des milliers de smashs.</p>
+            </li>
+            <li class="showcase__slide">
+              <img src="assets/showcase-macro.jpg" alt="Gros plan sur le tressage du filet et un pied Arctik Spike" loading="lazy">
+              <p class="showcase__caption"><strong>Chaque détail compte</strong>Du tressage du filet à la finition de chaque pied, rien n'est laissé au hasard.</p>
+            </li>
+            <li class="showcase__slide">
+              <img src="assets/showcase-styled.jpg" alt="Le sac de transport posé sur le filet, avec les balles" loading="lazy">
+              <p class="showcase__caption"><strong>Tout tient dans un seul sac</strong>Filet, pieds et balles se rangent en quelques secondes pour repartir léger.</p>
+            </li>
+            <li class="showcase__slide">
+              <img src="assets/showcase-bag.jpg" alt="Le sac de transport Arctik Spike à plat" loading="lazy">
+              <p class="showcase__caption"><strong>Le sac de transport, inclus</strong>Pensé pour voyager sans accroc, de la plage au jardin.</p>
+            </li>
+            <li class="showcase__slide showcase__slide--video">
+              <video src="assets/product-video.mp4" poster="assets/product-video-poster.jpg" muted loop playsinline preload="none" data-showcase-video></video>
+              <p class="showcase__caption"><strong>Conçu pour voyager partout</strong>De la plage au jardin, le set Arctik Spike suit partout où tu joues.</p>
+            </li>
+          </ul>
+        </div>
+
+        <div class="showcase__controls">
+          <button type="button" class="showcase__arrow showcase__arrow--prev" data-showcase-prev aria-label="Photo précédente">‹</button>
+          <div class="showcase__dots" data-showcase-dots></div>
+          <button type="button" class="showcase__arrow showcase__arrow--next" data-showcase-next aria-label="Photo suivante">›</button>
+        </div>
       </div>
     </section>
 
@@ -177,6 +260,47 @@
       </div>
     </section>
 
+    <section class="faq" id="faq">
+      <div class="faq__inner">
+        <span class="eyebrow">Questions fréquentes</span>
+        <h2>Tout ce qu'il faut savoir</h2>
+
+        <div class="faq__list">
+          <details class="faq__item" data-reveal>
+            <summary>Combien de temps faut-il pour monter le set ?</summary>
+            <p>Moins de 3 minutes, sans outils : on déplie les pieds, on tend le filet et c'est prêt à jouer.</p>
+          </details>
+
+          <details class="faq__item" data-reveal>
+            <summary>Où est-ce qu'on peut jouer ?</summary>
+            <p>Partout où il y a une surface plane : plage, parc, jardin, salle de sport. Le set est pensé pour voyager avec toi.</p>
+          </details>
+
+          <details class="faq__item" data-reveal>
+            <summary>Le set résiste-t-il au sable et à l'eau ?</summary>
+            <p>Oui — le filet et les pieds sont conçus pour encaisser le sable, l'humidité et une utilisation intensive en extérieur.</p>
+          </details>
+
+          <details class="faq__item" data-reveal>
+            <summary>Combien de joueurs peuvent jouer en même temps ?</summary>
+            <p>Le roundnet se joue à 4, en deux équipes de deux — mais rien n'empêche de faire tourner si vous êtes plus nombreux.</p>
+          </details>
+
+          <details class="faq__item" data-reveal>
+            <summary>Quels sont les délais de livraison en Suisse ?</summary>
+            <!-- TODO Corentin: remplace par ton vrai délai de livraison -->
+            <p>Compte généralement quelques jours ouvrés après la commande — le délai exact est précisé au moment du paiement sur la boutique.</p>
+          </details>
+
+          <details class="faq__item" data-reveal>
+            <summary>Et si le set ne me convient pas ?</summary>
+            <!-- TODO Corentin: remplace par ta vraie politique de retour/garantie -->
+            <p>Contacte-nous directement — on trouvera une solution. Les conditions détaillées de retour sont disponibles sur la boutique.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <section class="contact" id="contact">
       <div class="contact__inner">
         <span class="eyebrow">Nous contacter</span>
@@ -212,6 +336,19 @@
   </main>
 
   <footer class="site-footer">
+    <div class="site-footer__newsletter">
+      <div class="site-footer__newsletter-inner">
+        <p class="site-footer__newsletter-label">Reste informé des nouveautés Arctik Spike</p>
+        <!-- TODO Corentin: crée un 2e formulaire sur formspree.io (ou réutilise le même ID que le
+             formulaire "Organiser une démo" si tu préfères tout recevoir au même endroit) et
+             remplace VOTRE_ID_NEWSLETTER -->
+        <form class="site-footer__newsletter-form" action="https://formspree.io/f/VOTRE_ID_NEWSLETTER" method="POST">
+          <label class="visually-hidden" for="newsletter-email">E-mail</label>
+          <input id="newsletter-email" name="email" type="email" placeholder="Ton e-mail" required>
+          <button type="submit" class="btn btn--small">S'inscrire</button>
+        </form>
+      </div>
+    </div>
     <div class="site-footer__inner">
       <div class="site-footer__brand">
         <span class="site-footer__wordmark">ARCTIK SPIKE</span>
@@ -230,8 +367,11 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="hero3d.js"></script>
+  <script defer src="particles.js"></script>
   <script defer src="sections.js"></script>
+  <script defer src="showcase.js"></script>
   <script defer src="script.js"></script>
+  <script defer src="sticky-bar.js"></script>
   <script defer src="cursor.js"></script>
 </body>
 </html>
