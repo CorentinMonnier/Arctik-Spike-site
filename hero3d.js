@@ -252,10 +252,11 @@
       netMesh.position.y = 0.02;
       group.add(netMesh);
 
-      // Three teal legs, branded with the real "Arctik Spike" wordmark.
+      // Five teal legs, branded with the real "Arctik Spike" wordmark —
+      // the actual product stands on five folding feet, not three.
       var legTex = buildLegTexture(THREE);
       var legMat = new THREE.MeshStandardMaterial({ map: legTex, roughness: 0.55, metalness: 0.04 });
-      var legCount = 3;
+      var legCount = 5;
       for (var i = 0; i < legCount; i++) {
         var angle = (i / legCount) * Math.PI * 2;
         var legGeo = new THREE.CylinderGeometry(0.1, 0.12, 2.5, 16);
@@ -267,6 +268,13 @@
         leg.rotation.x = -Math.sin(angle) * 0.22;
         group.add(leg);
       }
+
+      // The real ball is bright yellow — rests just off-centre on the net.
+      var ballGeo = new THREE.SphereGeometry(0.42, 24, 24);
+      var ballMat = new THREE.MeshStandardMaterial({ color: 0xf4d035, roughness: 0.65, metalness: 0.02 });
+      var ball = new THREE.Mesh(ballGeo, ballMat);
+      ball.position.set(radius * 0.32, 0.46, radius * 0.1);
+      group.add(ball);
 
       return group;
     }
@@ -308,11 +316,13 @@
       ctx.save();
       ctx.translate(w / 2, h / 2);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillStyle = '#0d2524';
-      ctx.font = "700 54px Archivo, sans-serif";
+      ctx.fillStyle = '#111';
+      ctx.font = "700 58px Archivo, sans-serif";
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('ARCTIK SPIKE', 0, 0);
+      // Real leg sleeves print the wordmark on two lines — "Arctik" / "Spike".
+      ctx.fillText('Arctik', 0, -34);
+      ctx.fillText('Spike', 0, 34);
       ctx.restore();
       var tex = new THREE.CanvasTexture(cnv);
       tex.minFilter = THREE.LinearFilter;

@@ -473,15 +473,18 @@ a {
   padding: 7rem max(1.5rem, env(safe-area-inset-left, 0px)) 7rem max(1.5rem, env(safe-area-inset-right, 0px));
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 5.5rem;
 }
 
-.story__inner {
+.story__intro {
   max-width: 640px;
   margin: 0 auto;
   text-align: center;
 }
 
-.story__inner .eyebrow {
+.story__intro .eyebrow {
   text-align: center;
 }
 
@@ -490,15 +493,73 @@ a {
   font-style: italic;
   font-size: clamp(1.4rem, 3.2vw, 2rem);
   line-height: 1.4;
-  margin: 0 0 2rem;
+  margin: 0;
 }
 
-.story__inner p {
+/* alternating image + text editorial blocks */
+.story__block {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.story__block--reverse {
+  grid-template-columns: 1fr 1.1fr;
+}
+
+.story__block--reverse .story__block-media {
+  order: 2;
+}
+
+.story__block--reverse .story__block-text {
+  order: 1;
+}
+
+.story__block-media {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+}
+
+.story__block-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+}
+
+.story__block-text h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  margin: 0 0 0.9rem;
+  color: var(--teal, #20a39e);
+}
+
+.story__block-text p {
   font-family: 'Fraunces', serif;
   font-size: 1.05rem;
   line-height: 1.75;
   opacity: 0.8;
-  margin: 0 0 1.4rem;
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .story__block,
+  .story__block--reverse {
+    grid-template-columns: 1fr;
+  }
+  .story__block--reverse .story__block-media,
+  .story__block--reverse .story__block-text {
+    order: initial;
+  }
+  .story {
+    gap: 3.5rem;
+  }
 }
 
 /* ---------- règles du jeu ---------- */
@@ -741,4 +802,81 @@ a {
   .hero__canvas {
     display: none !important;
   }
+
+  .cursor-penguin,
+  .cursor-trail-item,
+  .cursor-burst-item {
+    display: none !important;
+  }
+}
+
+/* ---------- playful cursor layer (cursor.js) ---------- */
+
+/* Native cursor stays put on text fields even once the custom one is on;
+   only applied once JS confirms the custom cursor actually works. */
+html.has-custom-cursor,
+html.has-custom-cursor a,
+html.has-custom-cursor button,
+html.has-custom-cursor label {
+  cursor: none;
+}
+
+html.has-custom-cursor input,
+html.has-custom-cursor textarea {
+  cursor: text;
+}
+
+@media (pointer: coarse) {
+  html.has-custom-cursor,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button {
+    cursor: auto;
+  }
+}
+
+.cursor-penguin {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: auto;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cursor-penguin.is-visible {
+  opacity: 1;
+}
+
+.cursor-trail-item {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: auto;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.cursor-burst-item {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.cursor-burst-item--penguin {
+  width: 22px;
+  height: auto;
+}
+
+.cursor-burst-item--ball {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #f4d035;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
 }
