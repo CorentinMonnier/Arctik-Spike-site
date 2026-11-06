@@ -26,6 +26,7 @@
   var wordEl = document.querySelector('[data-hero-word]');
   var mascotImg = document.querySelector('[data-hero-mascot]');
   var hintEl = document.querySelector('[data-hero-hint]');
+  var ctaEl = document.querySelector('[data-hero-cta]');
 
   if (!stage || !inner || !wordEl || !mascotImg) return; // markup missing, nothing to do
 
@@ -123,6 +124,7 @@
         },
       });
       pull.to(inner, { scale: 0.74, y: -40, opacity: 0.55, duration: 1, ease: 'power1.inOut' }, 0);
+      if (ctaEl) pull.to(ctaEl, { opacity: 0, y: 20, duration: 0.5, ease: 'power1.inOut' }, 0);
       if (hintEl) pull.to(hintEl, { opacity: 0, duration: 0.3 }, 0);
     }
   }
@@ -252,21 +254,53 @@
       netMesh.position.y = 0.02;
       group.add(netMesh);
 
-      // Five teal legs, branded with the real "Arctik Spike" wordmark —
-      // the actual product stands on five folding feet, not three.
+      // Five flat, tapered teal legs — built from three stacked slab
+      // segments (foot / neck / branded body) instead of a round cylinder,
+      // because the real legs are flat plastic blades, not poles. Each
+      // segment is oriented with an explicit basis matrix (tangent/up/
+      // outward) rather than Euler rotation, so the branded face is
+      // guaranteed to point straight outward with no mirroring — top of
+      // the leg (y=0, local) meets the rim, bottom (y=-2.5) touches the
+      // ground, same span as before so nothing else needs to change.
       var legTex = buildLegTexture(THREE);
-      var legMat = new THREE.MeshStandardMaterial({ map: legTex, roughness: 0.55, metalness: 0.04 });
+      var legSideMat = new THREE.MeshStandardMaterial({ color: 0x20a39e, roughness: 0.55, metalness: 0.04 });
+      var legFrontMat = new THREE.MeshStandardMaterial({ map: legTex, roughness: 0.5, metalness: 0.04 });
       var legCount = 5;
+      var legThickness = 0.11;
+      var legRadius = radius * 0.78;
+
       for (var i = 0; i < legCount; i++) {
         var angle = (i / legCount) * Math.PI * 2;
-        var legGeo = new THREE.CylinderGeometry(0.1, 0.12, 2.5, 16);
-        var leg = new THREE.Mesh(legGeo, legMat);
-        leg.rotation.y = angle; // face the branded panel outward, varying per leg
-        var legRadius = radius * 0.78;
-        leg.position.set(Math.cos(angle) * legRadius, -1.25, Math.sin(angle) * legRadius);
-        leg.rotation.z = Math.cos(angle) * 0.22;
-        leg.rotation.x = -Math.sin(angle) * 0.22;
-        group.add(leg);
+        var outward = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
+        var up = new THREE.Vector3(0, 1, 0);
+        var tangent = new THREE.Vector3(Math.sin(angle), 0, -Math.cos(angle)); // tangent × up = outward (right-handed)
+        var basis = new THREE.Matrix4().makeBasis(tangent, up, outward);
+        var legQuat = new THREE.Quaternion().setFromRotationMatrix(basis);
+        var lx = Math.cos(angle) * legRadius;
+        var lz = Math.sin(angle) * legRadius;
+
+        // Branded body — top segment, meets the rim, "Arctik"/"Spike" on
+        // its outward (+Z) face only; the other 5 box faces stay plain teal.
+        var bodyGeo = new THREE.BoxGeometry(0.3, 1.3, legThickness);
+        var bodyMats = [legSideMat, legSideMat, legSideMat, legSideMat, legFrontMat, legSideMat];
+        var body = new THREE.Mesh(bodyGeo, bodyMats);
+        body.position.set(lx, -0.65, lz);
+        body.quaternion.copy(legQuat);
+        group.add(body);
+
+        // Neck — the narrow "waist" between the branded body and the foot.
+        var neckGeo = new THREE.BoxGeometry(0.2, 0.5, legThickness);
+        var neck = new THREE.Mesh(neckGeo, legSideMat);
+        neck.position.set(lx, -1.55, lz);
+        neck.quaternion.copy(legQuat);
+        group.add(neck);
+
+        // Foot — wide, flared base that actually touches the ground.
+        var footGeo = new THREE.BoxGeometry(0.46, 0.7, legThickness);
+        var foot = new THREE.Mesh(footGeo, legSideMat);
+        foot.position.set(lx, -2.15, lz);
+        foot.quaternion.copy(legQuat);
+        group.add(foot);
       }
 
       // The real ball is bright yellow — rests just off-centre on the net.
@@ -305,25 +339,38 @@
     }
 
     function buildLegTexture(THREE) {
-      var w = 220;
-      var h = 760;
+      // Flat panel now (no more cylinder-wrap), so the text is drawn
+      // upright, no rotate trick needed — same straight canvas-to-plane
+      // mapping already used successfully for the falling letters below.
+      var w = 200;
+      var h = 860;
       var cnv = document.createElement('canvas');
       cnv.width = w;
       cnv.height = h;
       var ctx = cnv.getContext('2d');
       ctx.fillStyle = '#20a39e';
       ctx.fillRect(0, 0, w, h);
-      ctx.save();
-      ctx.translate(w / 2, h / 2);
-      ctx.rotate(-Math.PI / 2);
       ctx.fillStyle = '#111';
-      ctx.font = "700 58px Archivo, sans-serif";
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      // Real leg sleeves print the wordmark on two lines — "Arctik" / "Spike".
-      ctx.fillText('Arctik', 0, -34);
-      ctx.fillText('Spike', 0, 34);
-      ctx.restore();
+
+      function fitSize(text, maxWidth) {
+        var size = 160;
+        while (size > 20) {
+          ctx.font = '700 ' + size + 'px Archivo, sans-serif';
+          if (ctx.measureText(text).width <= maxWidth) break;
+          size -= 2;
+        }
+        return size;
+      }
+
+      var maxW = w * 0.8;
+      // Real leg sleeves print the wordmark upright, on two lines.
+      ctx.font = '700 ' + fitSize('Arctik', maxW) + 'px Archivo, sans-serif';
+      ctx.fillText('Arctik', w / 2, h * 0.42);
+      ctx.font = '700 ' + fitSize('Spike', maxW) + 'px Archivo, sans-serif';
+      ctx.fillText('Spike', w / 2, h * 0.6);
+
       var tex = new THREE.CanvasTexture(cnv);
       tex.minFilter = THREE.LinearFilter;
       return tex;
@@ -441,6 +488,11 @@
       if (mats.length) tl.to(mats, { opacity: 0, duration: 0.4 }, 0.5);
       if (mascotMesh) tl.to(mascotMesh.material, { opacity: 0, duration: 0.4 }, 0.5);
       if (hintEl) tl.to(hintEl, { opacity: 0, duration: 0.25 }, 0);
+      // The tagline/CTA sit in their own fixed band (see styles.css), clear
+      // of the 3D content at rest — fade them out early in the scroll too,
+      // so they're gone well before the camera dolly and net rotation could
+      // sweep anything across that same screen area.
+      if (ctaEl) tl.to(ctaEl, { opacity: 0, y: 16, duration: 0.3 }, 0);
     }
   }
 })();
