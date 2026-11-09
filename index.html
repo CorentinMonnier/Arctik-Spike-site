@@ -89,30 +89,47 @@
   </div>
 
   <main id="top">
+    <!-- Tall scroll "runway" (see styles.css, height set there) so
+         .hero__sticky below has room to stay pinned to the viewport while
+         the page scrolls past it — that pinning is what lets the video
+         sharpen-then-darken as you scroll, Medici-style, with no JS
+         position hacks, just `position: sticky`. See hero-video.js. -->
     <section class="hero" id="hero" data-hero-stage>
-      <!-- Dark gradient backdrop, always visible behind the 3D scene -->
-      <div class="hero__grid" aria-hidden="true" data-hero-grid></div>
+      <div class="hero__sticky" data-hero-sticky>
+        <!-- Desktop/tablet: real video, grayscale via CSS filter (no
+             re-encode — reversible, same source file used in the showcase
+             carousel). Mobile: swapped for a static poster image instead,
+             assigned by hero-video.js — see styles.css for why: a looping
+             background video is real ongoing cost on mobile data/battery
+             for a decorative element, a static frame in the same grayscale
+             treatment keeps the same art direction for free. -->
+        <div class="hero__media" aria-hidden="true">
+          <video class="hero__video" data-hero-video muted loop playsinline preload="none" poster="assets/product-video-poster.jpg"></video>
+          <img class="hero__poster" src="assets/product-video-poster.jpg" alt="" data-hero-poster>
+        </div>
 
-      <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
-      <div class="hero__veil" aria-hidden="true"></div>
+        <!-- Fixed legibility scrim behind the header — independent of the
+             scroll-driven darkening below, so the nav stays readable no
+             matter which part of the video happens to be showing. -->
+        <div class="hero__scrim-top" aria-hidden="true"></div>
 
-      <div class="hero__inner" data-hero-inner>
-        <h1 class="visually-hidden">Arctik Spike</h1>
-        <div class="hero__word" aria-hidden="true" data-hero-word></div>
+        <!-- Opacity scrubbed by hero-video.js as you scroll: sharpens the
+             video first, then this darkens over it, fading all the way to
+             --bg by the time the pin releases — same seamless hand-off to
+             #produit the old .hero__veil used to do. -->
+        <div class="hero__overlay" data-hero-overlay aria-hidden="true"></div>
 
-        <img class="hero__mascot" src="assets/penguin.png" alt="" data-hero-mascot>
+        <div class="hero__inner">
+          <h1 class="hero__word" data-hero-word>Arctik Spike</h1>
+        </div>
+
+        <div class="hero__cta" data-hero-cta>
+          <p class="hero__subheading">Première marque de Roundnet suisse</p>
+          <a href="#produit" class="btn">Voir le produit</a>
+        </div>
+
+        <div class="hero__hint" aria-hidden="true" data-hero-hint>Défilez pour découvrir</div>
       </div>
-
-      <!-- Kept out of .hero__inner on purpose: the 3D scene (net, letters,
-           ball) is framed dead-centre on screen, so the tagline + CTA live
-           in their own fixed band near the bottom instead of competing for
-           the same space and overlapping the 3D content. -->
-      <div class="hero__cta" data-hero-cta>
-        <p class="hero__subheading">Première marque de Roundnet suisse</p>
-        <a href="#produit" class="btn">Voir le produit</a>
-      </div>
-
-      <div class="hero__hint" aria-hidden="true" data-hero-hint>Défilez pour découvrir</div>
     </section>
 
     <section class="product-slide" id="produit">
@@ -150,6 +167,9 @@
         <p class="body">Tout ce qu'il faut pour jouer, dans un seul set — pensé en Suisse pour résister à tout.</p>
         <!-- TODO Corentin: remplacer par le vrai lien du produit sur ta boutique Shopify -->
         <a href="https://arctikspike.com" class="btn" target="_blank" rel="noopener">Acheter sur la boutique</a>
+        <!-- TODO Corentin: complète avec tes vrais délais de livraison/retour
+             (je n'ai gardé que ce qui est sûr sans confirmation de ta part) -->
+        <p class="product-slide__trust">Paiement sécurisé · Livraison en Suisse</p>
       </div>
 
       <div class="showcase" data-showcase data-reveal>
@@ -195,6 +215,29 @@
           <button type="button" class="showcase__arrow showcase__arrow--prev" data-showcase-prev aria-label="Photo précédente">‹</button>
           <div class="showcase__dots" data-showcase-dots></div>
           <button type="button" class="showcase__arrow showcase__arrow--next" data-showcase-next aria-label="Photo suivante">›</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TODO Corentin: section prête à recevoir de vrais avis — envoie-moi
+         2-3 retours clients (texte + prénom, éventuellement une note) et je
+         remplace les emplacements réservés ci-dessous. Volontairement pas
+         de faux témoignage/nom inventé en attendant : ça ressemblerait à
+         un vrai avis alors que ça n'en est pas un. -->
+    <section class="testimonials" id="avis" data-reveal>
+      <div class="testimonials__inner">
+        <span class="eyebrow">Avis clients</span>
+        <h2>Ce qu'on en dit</h2>
+        <div class="testimonials__grid">
+          <div class="testimonials__card testimonials__card--placeholder">
+            <p>Emplacement réservé pour un avis client.</p>
+          </div>
+          <div class="testimonials__card testimonials__card--placeholder">
+            <p>Emplacement réservé pour un avis client.</p>
+          </div>
+          <div class="testimonials__card testimonials__card--placeholder">
+            <p>Emplacement réservé pour un avis client.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -314,8 +357,7 @@
           <div class="contact__card" data-reveal>
             <h3>Une question ?</h3>
             <p>Sur le produit, une commande ou autre chose — on te répond directement.</p>
-            <!-- TODO Corentin: remplace par ta vraie adresse e-mail de contact -->
-            <a class="btn btn--outline" href="mailto:contact@arctikspike.com">Nous écrire</a>
+            <a class="btn btn--outline" href="mailto:corentin.monnier@bluewin.ch">Nous écrire</a>
           </div>
 
           <div class="contact__card" data-reveal>
@@ -340,6 +382,16 @@
   </main>
 
   <footer class="site-footer">
+    <!-- TODO Corentin: envoie-moi 3-4 photos et je remplace ce bandeau par
+         une vraie grille de vignettes — pour l'instant le lien vers ton
+         profil est bien fonctionnel, juste sans aperçu des photos. -->
+    <div class="site-footer__instagram">
+      <div class="site-footer__instagram-inner">
+        <p class="site-footer__instagram-label">Suis l'aventure sur Instagram</p>
+        <a class="site-footer__instagram-link" href="https://www.instagram.com/arctik.spike/" target="_blank" rel="noopener">@arctik.spike →</a>
+      </div>
+    </div>
+
     <div class="site-footer__newsletter">
       <div class="site-footer__newsletter-inner">
         <p class="site-footer__newsletter-label">Reste informé des nouveautés Arctik Spike</p>
@@ -367,15 +419,26 @@
     </div>
   </footer>
 
+  <!-- Purely decorative: the "cool" sunglasses penguin struts across the
+       screen once as the hero hands off to the product section. Fixed +
+       JS-positioned, so where it sits in the document doesn't matter.
+       A 15-frame sprite sheet (assets/penguin-walk-sprite.png, each frame
+       individually chroma-keyed to real alpha), not a video — see
+       penguin-curtain.js for why: alpha-channel WebM looked right when
+       decoded by ffmpeg but showed real hue artifacts when decoded by
+       Chromium itself, and alpha-video support is inconsistent across
+       browsers generally (Safari especially). A PNG sprite sheet has none
+       of that risk. -->
+  <div class="penguin-curtain" data-penguin-curtain aria-hidden="true"></div>
+
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
-  <script defer src="hero3d.js"></script>
-  <script defer src="particles.js"></script>
+  <script defer src="hero-video.js"></script>
   <script defer src="sections.js"></script>
   <script defer src="showcase.js"></script>
   <script defer src="smooth-scroll.js"></script>
+  <script defer src="penguin-curtain.js"></script>
   <script defer src="script.js"></script>
   <script defer src="sticky-bar.js"></script>
   <script defer src="cursor.js"></script>
