@@ -178,6 +178,28 @@ a {
   color: var(--teal-light);
 }
 
+/* Shared minimal Instagram glyph — used in the header nav, the footer
+   socials row, and the footer Instagram band. currentColor throughout so
+   it always matches whatever text color surrounds it. */
+.icon-instagram {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+.site-header__nav-link--icon {
+  display: flex;
+  align-items: center;
+}
+
+.site-header__nav-link--icon .icon-instagram {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
 .site-header__actions {
   display: flex;
   align-items: center;
@@ -249,6 +271,13 @@ a {
   text-decoration: none;
   color: var(--fg);
   font-size: 1.1rem;
+}
+
+.site-header__mobile-nav-instagram {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--teal-light) !important;
 }
 
 @media screen and (min-width: 750px) {
@@ -585,24 +614,52 @@ a {
   text-align: center;
 }
 
+.testimonials__meta {
+  margin: 0.75rem 0 0;
+  opacity: 0.65;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
 .testimonials__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.25rem;
   margin-top: 2.5rem;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .testimonials__card {
-  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  padding: 2rem 1.5rem;
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  opacity: 0.45;
+  padding: 2rem 1.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  text-align: left;
 }
 
-.testimonials__card p {
+.testimonials__stars {
+  color: var(--teal-light);
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.testimonials__card p:not(.testimonials__author):not(.testimonials__stars) {
   margin: 0;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.testimonials__author {
+  margin: 1rem 0 0;
+  font-family: 'Archivo', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.85rem;
+  opacity: 0.75;
 }
 
 /* ---------- notre histoire (editorial) ---------- */
@@ -1105,6 +1162,9 @@ a {
   max-width: 1600px;
   margin: 0 auto;
   padding: 2.25rem max(1.25rem, env(safe-area-inset-left, 0px));
+}
+
+.site-footer__instagram-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1119,6 +1179,9 @@ a {
 }
 
 .site-footer__instagram-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   text-decoration: none;
   color: var(--teal-light);
   font-weight: 600;
@@ -1128,6 +1191,55 @@ a {
 
 .site-footer__instagram-link:hover {
   opacity: 0.8;
+}
+
+.site-footer__instagram-grid {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  max-width: 420px;
+}
+
+.site-footer__instagram-grid li {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.site-footer__instagram-grid a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.site-footer__instagram-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.site-footer__instagram-grid a:hover img {
+  transform: scale(1.06);
+  opacity: 0.85;
+}
+
+.site-footer__instagram-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.9rem;
+  height: 1.9rem;
+  transform: translate(-50%, -50%);
+  fill: rgba(255, 255, 255, 0.92);
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.45));
+  pointer-events: none;
 }
 
 .site-footer__newsletter {
