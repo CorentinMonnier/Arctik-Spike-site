@@ -662,6 +662,18 @@ a {
   opacity: 0.75;
 }
 
+/* Wraps the embedded Shopify Buy Button (see index.html, #produit) — the
+   component itself renders inside an iframe Shopify injects at runtime, so
+   this just centers that iframe and gives it some breathing room; the
+   actual button/cart colors are set via the `options.product.styles` /
+   `options.cart.styles` objects passed to the component, not here. */
+.product-slide__buybutton {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0;
+  min-height: 52px;
+}
+
 /* ---------- notre histoire (editorial) ---------- */
 
 .story {

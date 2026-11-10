@@ -92,8 +92,11 @@
         </div>
       </div>
       <div class="sticky-bar__actions">
-        <!-- TODO Corentin: même lien que le bouton principal — remplace par ta vraie page produit Shopify -->
-        <a href="https://arctikspike.com" class="btn btn--small" target="_blank" rel="noopener">Acheter</a>
+        <!-- Renvoie vers le vrai bouton d'achat Shopify intégré dans la carte
+             produit (voir #produit), plutôt que de dupliquer un 2e bouton
+             d'achat séparé — un seul panier Shopify sur la page, une seule
+             source de vérité. -->
+        <a href="#produit" class="btn btn--small">Acheter</a>
         <button type="button" class="sticky-bar__close" data-sticky-close aria-label="Fermer cette barre">✕</button>
       </div>
     </div>
@@ -176,8 +179,220 @@
       <div class="product-slide__card" data-product-card>
         <p class="price">CHF 69.00 <span class="price__old">CHF 89.00</span></p>
         <p class="body">Tout ce qu'il faut pour jouer, dans un seul set — pensé en Suisse pour résister à tout.</p>
-        <!-- TODO Corentin: remplacer par le vrai lien du produit sur ta boutique Shopify -->
-        <a href="https://arctikspike.com" class="btn" target="_blank" rel="noopener">Acheter sur la boutique</a>
+
+        <!-- Vrai bouton d'achat Shopify (canal "Buy Button"), branché directement
+             sur le panier/checkout Shopify de Corentin — plus un simple lien vers
+             l'ancienne boutique. Stock, commandes, paiement : tout reste géré par
+             Shopify normalement, seul l'habillage visuel est à nous (voir
+             l'objet `options` ci-dessous, réglé pour reprendre les couleurs/
+             la police du site plutôt que le style par défaut de Shopify).
+             Le `storefrontAccessToken` ci-dessous est un jeton public en
+             lecture seule fait pour tourner côté navigateur — ce n'est pas un
+             secret à protéger, c'est le fonctionnement normal du Buy Button. -->
+        <div id="product-component-1794330763298" class="product-slide__buybutton"></div>
+        <script type="text/javascript">
+        /*<![CDATA[*/
+        (function () {
+          var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+          if (window.ShopifyBuy) {
+            if (window.ShopifyBuy.UI) {
+              ShopifyBuyInit();
+            } else {
+              loadScript();
+            }
+          } else {
+            loadScript();
+          }
+          function loadScript() {
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = scriptURL;
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+            script.onload = ShopifyBuyInit;
+          }
+          function ShopifyBuyInit() {
+            var client = ShopifyBuy.buildClient({
+              domain: 'gebfjb-t5.myshopify.com',
+              storefrontAccessToken: '79c45afe7b3a1a869f0aa396d986fe1d',
+            });
+            ShopifyBuy.UI.onReady(client).then(function (ui) {
+              ui.createComponent('product', {
+                id: '15404309414265',
+                node: document.getElementById('product-component-1794330763298'),
+                moneyFormat: 'CHF%20%7B%7Bamount%7D%7D',
+                options: {
+                  "product": {
+                    "styles": {
+                      "product": {
+                        "@media (min-width: 601px)": {
+                          "max-width": "100%",
+                          "margin-left": "0",
+                          "margin-bottom": "0"
+                        }
+                      },
+                      "button": {
+                        "font-family": "Archivo, sans-serif",
+                        "font-weight": "600",
+                        "font-size": "14.4px",
+                        "letter-spacing": "0.02em",
+                        "padding-top": "16px",
+                        "padding-bottom": "16px",
+                        "padding-left": "29px",
+                        "padding-right": "29px",
+                        "border-radius": "999px",
+                        ":hover": {
+                          "background-color": "#4dd4ce"
+                        },
+                        "background-color": "#20a39e",
+                        ":focus": {
+                          "background-color": "#4dd4ce"
+                        },
+                        "color": "#000000"
+                      },
+                      "quantityInput": {
+                        "font-family": "Archivo, sans-serif"
+                      },
+                      "price": {
+                        "font-family": "Archivo, sans-serif",
+                        "color": "#ffffff"
+                      },
+                      "compareAt": {
+                        "font-family": "Archivo, sans-serif",
+                        "color": "rgba(255,255,255,0.5)"
+                      },
+                      "unitPrice": {
+                        "font-family": "Archivo, sans-serif"
+                      }
+                    },
+                    "text": {
+                      "button": "Ajouter au panier"
+                    },
+                    "googleFonts": ["Archivo"]
+                  },
+                  "productSet": {
+                    "styles": {
+                      "products": {
+                        "@media (min-width: 601px)": {
+                          "margin-left": "0"
+                        }
+                      }
+                    }
+                  },
+                  "modalProduct": {
+                    "contents": {
+                      "img": false,
+                      "imgWithCarousel": true,
+                      "button": false,
+                      "buttonWithQuantity": true
+                    },
+                    "styles": {
+                      "product": {
+                        "@media (min-width: 601px)": {
+                          "max-width": "100%",
+                          "margin-left": "0px",
+                          "margin-bottom": "0px"
+                        }
+                      },
+                      "button": {
+                        "font-family": "Archivo, sans-serif",
+                        "border-radius": "999px",
+                        ":hover": {
+                          "background-color": "#4dd4ce"
+                        },
+                        "background-color": "#20a39e",
+                        ":focus": {
+                          "background-color": "#4dd4ce"
+                        },
+                        "color": "#000000"
+                      }
+                    },
+                    "text": {
+                      "button": "Ajouter au panier"
+                    }
+                  },
+                  "option": {},
+                  "cart": {
+                    "styles": {
+                      "button": {
+                        "font-family": "Archivo, sans-serif",
+                        "font-weight": "600",
+                        "border-radius": "999px",
+                        ":hover": {
+                          "background-color": "#4dd4ce"
+                        },
+                        "background-color": "#20a39e",
+                        ":focus": {
+                          "background-color": "#4dd4ce"
+                        },
+                        "color": "#000000"
+                      },
+                      "title": {
+                        "font-family": "Archivo, sans-serif",
+                        "color": "#ffffff"
+                      },
+                      "header": {
+                        "color": "#ffffff",
+                        "background-color": "#070707"
+                      },
+                      "lineItems": {
+                        "background-color": "#070707"
+                      },
+                      "lineItem": {
+                        "color": "#ffffff"
+                      },
+                      "subtotalText": {
+                        "color": "#ffffff",
+                        "font-family": "Archivo, sans-serif"
+                      },
+                      "subtotal": {
+                        "color": "#ffffff",
+                        "font-family": "Archivo, sans-serif"
+                      },
+                      "notice": {
+                        "color": "rgba(255,255,255,0.6)"
+                      },
+                      "currency": {
+                        "color": "#ffffff"
+                      },
+                      "close": {
+                        "color": "#ffffff",
+                        ":hover": {
+                          "color": "#4dd4ce"
+                        }
+                      },
+                      "footer": {
+                        "background-color": "#070707"
+                      }
+                    },
+                    "text": {
+                      "total": "Sous-total",
+                      "button": "Passer au paiement",
+                      "notice": "Livraison gratuite dans toute la Suisse"
+                    },
+                    "googleFonts": ["Archivo"],
+                    "popup": false
+                  },
+                  "toggle": {
+                    "styles": {
+                      "toggle": {
+                        "background-color": "#20a39e",
+                        ":hover": {
+                          "background-color": "#4dd4ce"
+                        },
+                        ":focus": {
+                          "background-color": "#4dd4ce"
+                        }
+                      }
+                    }
+                  }
+                },
+              });
+            });
+          }
+        })();
+        /*]]>*/
+        </script>
+
         <p class="product-slide__trust">Paiement sécurisé · Livraison gratuite dans toute la Suisse</p>
       </div>
 
