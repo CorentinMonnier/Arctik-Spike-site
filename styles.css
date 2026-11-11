@@ -554,8 +554,40 @@ a {
 }
 
 @media (max-width: 720px) {
+  /* Sur téléphone, 4 pastilles flottantes à 130px de large sur une image
+     devenue étroite se chevauchent et le texte "s'emboîte" (Corentin,
+     retour Round J) — ça rendait bien sur ordi (image large, pastilles
+     bien espacées) mais pas sur mobile. On abandonne le positionnement
+     flottant ici : chaque point devient une ligne pleine largeur, empilée
+     sous l'image, sans superposition possible. */
   .product-stage__callout {
-    max-width: 130px;
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    max-width: none;
+    width: 100%;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.9rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .product-stage__callout:first-of-type {
+    border-top: none;
+    padding-top: 1.4rem;
+  }
+
+  .product-stage__dot {
+    margin-top: 0.35rem;
+  }
+
+  .product-stage__callout p {
+    font-size: 0.85rem;
+  }
+
+  .product-stage__callout strong {
+    font-size: 0.88rem;
   }
 }
 
@@ -672,6 +704,18 @@ a {
   justify-content: center;
   margin: 0.5rem 0;
   min-height: 52px;
+}
+
+/* Même logique pour le bouton compact de la barre collante (Round J) : le
+   composant Shopify n'affiche ici qu'un bouton "Acheter" (pas d'image/titre/
+   prix, voir index.html), donc il reste petit — juste besoin de l'aligner
+   avec le reste de la barre et de lui laisser une hauteur minimale pour
+   éviter un saut de mise en page pendant que l'iframe Shopify charge. */
+.sticky-bar__buybutton {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  min-width: 90px;
 }
 
 /* ---------- notre histoire (editorial) ---------- */

@@ -92,11 +92,15 @@
         </div>
       </div>
       <div class="sticky-bar__actions">
-        <!-- Renvoie vers le vrai bouton d'achat Shopify intégré dans la carte
-             produit (voir #produit), plutôt que de dupliquer un 2e bouton
-             d'achat séparé — un seul panier Shopify sur la page, une seule
-             source de vérité. -->
-        <a href="#produit" class="btn btn--small">Acheter</a>
+        <!-- Round J : Corentin trouvait qu'un lien qui scrolle vers #produit
+             ne faisait pas grand-chose d'utile depuis la barre collante
+             (on y est déjà). C'est maintenant un 2e composant Shopify Buy
+             Button, réglé en mode "bouton seul" (image/titre/prix masqués,
+             buttonDestination: 'cart') : un clic ajoute directement 1 set
+             au panier, sans scroll. Shopify ne gère qu'un seul panier par
+             page, donc ce bouton et celui de la carte produit partagent le
+             même panier. -->
+        <div id="product-component-sticky" class="sticky-bar__buybutton"></div>
         <button type="button" class="sticky-bar__close" data-sticky-close aria-label="Fermer cette barre">✕</button>
       </div>
     </div>
@@ -216,11 +220,7 @@
               storefrontAccessToken: '79c45afe7b3a1a869f0aa396d986fe1d',
             });
             ShopifyBuy.UI.onReady(client).then(function (ui) {
-              ui.createComponent('product', {
-                id: '15404309414265',
-                node: document.getElementById('product-component-1794330763298'),
-                moneyFormat: 'CHF%20%7B%7Bamount%7D%7D',
-                options: {
+              var productOptions = {
                   "product": {
                     "styles": {
                       "product": {
@@ -250,7 +250,10 @@
                         "color": "#000000"
                       },
                       "quantityInput": {
-                        "font-family": "Archivo, sans-serif"
+                        "font-family": "Archivo, sans-serif",
+                        "color": "#20a39e",
+                        "background-color": "#ffffff",
+                        "border-color": "rgba(0,0,0,0.15)"
                       },
                       "price": {
                         "font-family": "Archivo, sans-serif",
@@ -385,8 +388,45 @@
                       }
                     }
                   }
-                },
+                };
+
+              ui.createComponent('product', {
+                id: '15404309414265',
+                node: document.getElementById('product-component-1794330763298'),
+                moneyFormat: 'CHF%20%7B%7Bamount%7D%7D',
+                options: productOptions,
               });
+
+              // Bouton compact de la barre collante : même produit, même
+              // client, mais affiché en mode "bouton seul" (le reste du
+              // contenu masqué) et réglé pour ajouter directement au panier.
+              var stickyNode = document.getElementById('product-component-sticky');
+              if (stickyNode) {
+                var stickyOptions = JSON.parse(JSON.stringify(productOptions));
+                stickyOptions.product.contents = {
+                  "img": false,
+                  "title": false,
+                  "price": false,
+                  "options": false,
+                  "quantity": false,
+                  "quantityInput": false,
+                  "button": true
+                };
+                stickyOptions.product.buttonDestination = 'cart';
+                stickyOptions.product.text.button = 'Acheter';
+                stickyOptions.product.styles.button['padding-top'] = '10px';
+                stickyOptions.product.styles.button['padding-bottom'] = '10px';
+                stickyOptions.product.styles.button['padding-left'] = '20px';
+                stickyOptions.product.styles.button['padding-right'] = '20px';
+                stickyOptions.product.styles.button['font-size'] = '12.8px';
+
+                ui.createComponent('product', {
+                  id: '15404309414265',
+                  node: stickyNode,
+                  moneyFormat: 'CHF%20%7B%7Bamount%7D%7D',
+                  options: stickyOptions,
+                });
+              }
             });
           }
         })();
@@ -587,8 +627,18 @@
           <div class="contact__card" data-reveal>
             <h3>Organiser une démo</h3>
             <p>Entreprise, école, festival, anniversaire — on vient faire découvrir le roundnet à ton évènement.</p>
-            <!-- TODO Corentin: ce formulaire pointe vers un identifiant Formspree à créer (gratuit sur formspree.io) -->
-            <form class="contact__form" action="https://formspree.io/f/VOTRE_ID" method="POST">
+            <!-- Envoi réel via FormSubmit.co (gratuit, aucun compte à créer) :
+                 l'adresse dans l'action reçoit directement le mail. Au tout
+                 premier envoi, FormSubmit mande à corentin.monnier@bluewin.ch
+                 un e-mail de confirmation à usage unique (lien à cliquer) —
+                 une fois ça fait, tous les envois suivants arrivent direct,
+                 sans rien à refaire. Champ "_honey" = piège à robots, caché
+                 en CSS, à ne jamais remplir soi-même (vide = humain). -->
+            <form class="contact__form" action="https://formsubmit.co/corentin.monnier@bluewin.ch" method="POST">
+              <input type="hidden" name="_subject" value="Nouvelle demande de démo — Arctik Spike">
+              <input type="hidden" name="_template" value="table">
+              <input type="hidden" name="_next" value="https://arctikspike.com/#contact">
+              <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
               <label class="visually-hidden" for="demo-name">Nom</label>
               <input id="demo-name" name="name" type="text" placeholder="Ton nom" required>
               <label class="visually-hidden" for="demo-email">E-mail</label>
@@ -641,13 +691,17 @@
       </div>
     </div>
 
-    <div class="site-footer__newsletter">
+    <div class="site-footer__newsletter" id="newsletter">
       <div class="site-footer__newsletter-inner">
         <p class="site-footer__newsletter-label">Reste informé des nouveautés Arctik Spike</p>
-        <!-- TODO Corentin: crée un 2e formulaire sur formspree.io (ou réutilise le même ID que le
-             formulaire "Organiser une démo" si tu préfères tout recevoir au même endroit) et
-             remplace VOTRE_ID_NEWSLETTER -->
-        <form class="site-footer__newsletter-form" action="https://formspree.io/f/VOTRE_ID_NEWSLETTER" method="POST">
+        <!-- Même service que le formulaire "Organiser une démo" (FormSubmit.co,
+             voir le commentaire plus haut) : même adresse de réception, donc
+             même e-mail de confirmation à cliquer une fois pour activer les
+             deux formulaires d'un coup. -->
+        <form class="site-footer__newsletter-form" action="https://formsubmit.co/corentin.monnier@bluewin.ch" method="POST">
+          <input type="hidden" name="_subject" value="Nouvelle inscription newsletter — Arctik Spike">
+          <input type="hidden" name="_next" value="https://arctikspike.com/#newsletter">
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
           <label class="visually-hidden" for="newsletter-email">E-mail</label>
           <input id="newsletter-email" name="email" type="email" placeholder="Ton e-mail" required>
           <button type="submit" class="btn btn--small">S'inscrire</button>
